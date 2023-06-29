@@ -60,7 +60,7 @@ const loggedIn = useStoreState((state)=>state.loggedIn)
         <h1 className="text-red-600 text-center text-5xl p-3 m-4">Blog Articles</h1>
             {loggedIn? <div className="text-center object-center ">
             <label htmlFor="title" className="text-2xl md: block">Write a title</label>
-            <input type='text' className="px-3 w-[700px] h-9 border-2 border-black rounded m-3"
+            <input type='text' className="xl:mr-20 lg:mr-4 px-3 w-[700px] h-9 border-2 border-black rounded m-3"
             onChange={(e)=> setTitle(e.target.value)}/>
             <label htmlFor="textarea" className="text-2xl md: block">Write a new blog post</label>
          <textarea  className='border-black border-2 m-4 rounded p-3' name="textarea" id="textarea" cols="90" rows="10"
