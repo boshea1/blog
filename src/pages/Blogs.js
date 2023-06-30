@@ -1,12 +1,15 @@
-import { useStoreState } from "easy-peasy";
+import { useStoreActions, useStoreState } from "easy-peasy";
 import { useState } from "react";
+import { addData } from "../requests";
 
 const Blogs = () => {
-const [blogs, setBlogs] = useState([])
+// const [blogs, setBlogs] = useState([])
 const [blog,setBlog] = useState('')
 const [title,setTitle] = useState('')
 const [edit,setEdit] = useState({id:null,title:'',post:''})
 const loggedIn = useStoreState((state)=>state.loggedIn)
+const blogs = useStoreState((state)=>state.blogs)
+const setBlogs = useStoreActions((actions) => actions.setBlogs)
 
     const handleSubmit = (post, title, id) => {
         if (post && title){
@@ -24,6 +27,7 @@ const loggedIn = useStoreState((state)=>state.loggedIn)
                 alert('Enter in a post and a title')
             }
         }
+        addData()
     }
 
     const handleDelete = (id) => {
