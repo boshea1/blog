@@ -7,10 +7,9 @@ const store = createStore({
     }),
     blogs: [],
     setBlogs: action((state, payload)=>{
-        console.log(payload)
         state.blogs = payload
     })
 })
-// const [blogs, setBlogs] = useState([])
+
 
 export default store;

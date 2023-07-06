@@ -26,6 +26,9 @@ const color = loggedIn ? 'bg-green-500':'bg-red-500'
             <li className={`mx-4 pb-1 px-2 hover:border-green-600 border-b-2`}>
               <Link to="/contact">Contact</Link>
             </li>
+            <li className={`mx-4 pb-1 px-2 hover:border-pink-600 border-b-2`}>
+              <Link to="/apps">Apps</Link>
+            </li>
           </ul>
         </nav>
         <Outlet />
