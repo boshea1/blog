@@ -1,7 +1,7 @@
 import { useStoreActions, useStoreState } from "easy-peasy";
-import {   useState } from "react";
-import { addData, handleDel} from "../requests";
-import { collection, getDocs } from "firebase/firestore"; 
+import {    useEffect, useState } from "react";
+import { addData, handleDel, handleUpdate} from "../requests";
+import { collection, onSnapshot } from "firebase/firestore"; 
 import { db } from "../firebase";
 const Blogs = () => {
 // const [blogs, setBlogs] = useState([])
@@ -32,37 +32,49 @@ const setBlogs = useStoreActions((actions) => actions.setBlogs)
         addData(post, title, id, date)
     }
 
-    const handleDelete = (id) => {
-        const filtered = blogs.filter((post)=>post.id !== id)
+    const handleDelete = ({id}) => {
+        // const filtered = blogs.filter((post)=>post.id !== id)
         // setBlogs([...filtered])
-        handleDel()
+        handleDel(id)
     }
     
-    const handleEdit = (e) => {
-        console.log(e)
-        const mapped = blogs.map((item)=>item.id === edit.id? edit : item)
-        setBlogs(mapped)
+    const handleEdit = () => {
+        
+        // const mapped = blogs.map((item)=>item.id === edit.id? edit : item)
+        // setBlogs(mapped)
+        handleUpdate(edit)
         setEdit({id:null,title:'',post:''})
     }
 
-    const handleget = async() => {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const querySnapshot1 = await querySnapshot
-        const x = []
-            for (var i in querySnapshot.docs){
-        const id = querySnapshot1.docs[i]._document.data.value.mapValue.fields.id.integerValue
-        const post = querySnapshot1.docs[i]._document.data.value.mapValue.fields.post.stringValue
-        const title = querySnapshot1.docs[i]._document.data.value.mapValue.fields.title.stringValue
-        const date = querySnapshot1.docs[i]._document.data.value.mapValue.fields.date.stringValue
-        x.push({title,post,id,date})
-    }
+    
+//         const handleget = async() => {
+//             const querySnapshot = await getDocs(collection(db, "users"));
+//             const querySnapshot1 =  querySnapshot
+//             const x = []
+//             console.log('rerndering')
+//             for (var i in querySnapshot.docs){
+//                 const id =querySnapshot1.docs[i].id
+//                 // const id = querySnapshot1.docs[i]._document.data.value.mapValue.fields.id.integerValue
+//                 const post = querySnapshot1.docs[i]._document.data.value.mapValue.fields.post.stringValue
+//         const title = querySnapshot1.docs[i]._document.data.value.mapValue.fields.title.stringValue
+//         const date = querySnapshot1.docs[i]._document.data.value.mapValue.fields.date.stringValue
+//         x.push({title,post,id,date}) 
+//     }  
+//     return x
+// }
+// useEffect(()=>{
+//     handleget().then(function(result){
+//         setBlogs(result)
+//     })
+// },[setBlogs])
 
-    return x
-    }
+useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
+    // console.log(snapshot.docs.map(doc => doc.data()))
+    // console.log(snapshot.docs.map(doc => doc.id))
+    setBlogs(snapshot.docs.map((doc)=>({...doc.data(),id:doc.id})))
+}),[setBlogs])
+// console.log('setblogs',blogs)
 
-    handleget().then(function(result){
-        setBlogs(result)
-    })
 
     
   
@@ -78,7 +90,7 @@ const setBlogs = useStoreActions((actions) => actions.setBlogs)
          <textarea  className='border-black border-2 m-4 rounded p-3' name="textarea" id="textarea" cols="90" rows="10"
                     value={edit.post} onChange={(e)=>setEdit({...edit,post: e.target.value})}></textarea>
          <button className=" border-2 border-black px-2 py-1 rounded object-center"
-         onClick={(e)=>handleEdit(e)}>Submit</button>
+         onClick={()=>handleEdit()}>Submit</button>
          </>
         )
     }
@@ -110,7 +122,7 @@ const setBlogs = useStoreActions((actions) => actions.setBlogs)
                    <p className='mx-8 my-10 text-lg'>{blogg.post}</p>
                    <p className='mx-8 my-10 text-sm'>{blogg.date}</p>
                   {loggedIn ? <div><button className="border-black border-2 rounded px-2 float-right top-0"
-                           onClick={()=>{handleDelete(blogg.id)}}>Delete</button>
+                           onClick={()=>{handleDelete(blogg)}}>Delete</button>
                    <button className="border-black border-2 rounded px-2 float-right top-0"
                             onClick={(e)=> 
                                     setEdit({id:blogg.id, title:blogg.title, post: blogg.post,date:blogg.date})}>Edit</button></div> : ''}

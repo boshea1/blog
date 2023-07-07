@@ -1,4 +1,4 @@
-import { collection, addDoc,doc, deleteDoc } from "firebase/firestore"; 
+import { collection, addDoc,doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db } from "./firebase";
 
 export const addData = async (post, title, id, date) => {
@@ -17,9 +17,9 @@ export const addData = async (post, title, id, date) => {
 
 
 export const handleDel = async(id) => {
-        
+    console.log('iddddddd',id)
         try {
-                await deleteDoc(doc(db, "test_data", id)); }
+                await deleteDoc(doc(db, "users", id)); }
          catch(err) {
             console.log(err)
         }
@@ -27,6 +27,11 @@ export const handleDel = async(id) => {
      
     export default handleDel;
 
+
+export const handleUpdate = async(item) => {
+    const ref = doc(db,'users',item.id)
+    await updateDoc(ref, item)
+}
 
 
 
