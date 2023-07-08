@@ -2,15 +2,17 @@ import { useStoreActions, useStoreState } from "easy-peasy";
 import {    useEffect, useState } from "react";
 import { addData, handleDel, handleUpdate} from "../requests";
 import { collection, onSnapshot } from "firebase/firestore"; 
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 const Blogs = () => {
 // const [blogs, setBlogs] = useState([])
 const [blog,setBlog] = useState('')
 const [title,setTitle] = useState('')
 const [edit,setEdit] = useState({id:null,title:'',post:''})
-const loggedIn = useStoreState((state)=>state.loggedIn)
+// const loggedIn = useStoreState((state)=>state.loggedIn)
 const blogs = useStoreState((state)=>state.blogs)
 const setBlogs = useStoreActions((actions) => actions.setBlogs)
+const [user,loading]=useAuthState(auth)
 
     const handleSubmit = (post, title, id) => {
         const date = new Date().toLocaleString()
@@ -98,18 +100,21 @@ useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
 
 
     return (
-        <div>
-        <h1 className="text-red-600 text-center text-5xl p-3 m-4">Blog Articles</h1>
-            {loggedIn? <div className="text-center object-center ">
-            <label htmlFor="title" className="text-2xl md: block">Write a title</label>
-            <input type='text' className="xl:mr-20 lg:mr-4 px-3 w-[700px] h-9 border-2 border-black rounded m-3"
-            onChange={(e)=> setTitle(e.target.value)}/>
-            <label htmlFor="textarea" className="text-2xl md: block">Write a new blog post</label>
-         <textarea  className='border-black border-2 m-4 rounded p-3' name="textarea" id="textarea" cols="90" rows="10"
-                    value={blog}onChange={(event)=> setBlog(event.target.value)} ></textarea>
-         <button className=" border-2 border-black px-2 py-1 rounded object-center"
-         onClick={()=>handleSubmit(blog, title, Math.floor(Math.random() * 10000))}>Submit</button>
-            </div>: ''}
+      
+          <div>
+          <h1 className="text-red-600 text-center text-5xl p-3 m-4">Blog Articles</h1>
+          {user? <div className="text-center object-center ">
+          <label htmlFor="title" className="text-2xl md: block">Write a title</label>
+          <input type='text' className="xl:mr-20 lg:mr-4 px-3 w-[700px] h-9 border-2 border-black rounded m-3"
+          onChange={(e)=> setTitle(e.target.value)}/>
+          <label htmlFor="textarea" className="text-2xl md: block">Write a new blog post</label>
+          <textarea  className='border-black border-2 m-4 rounded p-3 shadow-2xl' name="textarea" id="textarea" cols="90" rows="10"
+          value={blog}onChange={(event)=> setBlog(event.target.value)} ></textarea>
+          <button className=" border-2 border-black px-2 py-1 rounded object-center"
+          onClick={()=>handleSubmit(blog, title, Math.floor(Math.random() * 10000))}>Submit</button>
+          </div>: ''}
+          
+        
      
         <div>
             <h1 className="text-2xl mx-8 mt-6">Blog Post</h1>
@@ -117,11 +122,11 @@ useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
             // .slice().reverse()
             .map((blogg)=>{
                return(
-                   <div key={blogg.id} className="border-black border-2 my-10 mx-4 rounded">
+                   <div key={blogg.id} className="border-grey900 border-2 my-10 mx-4 rounded shadow-lg">
                     <p className='mx-8 my-3 text-2xl'>{blogg.title}</p>
                    <p className='mx-8 my-10 text-lg'>{blogg.post}</p>
                    <p className='mx-8 my-10 text-sm'>{blogg.date}</p>
-                  {loggedIn ? <div><button className="border-black border-2 rounded px-2 float-right top-0"
+                  {user ? <div><button className="border-black border-2 rounded px-2 float-right top-0"
                            onClick={()=>{handleDelete(blogg)}}>Delete</button>
                    <button className="border-black border-2 rounded px-2 float-right top-0"
                             onClick={(e)=> 
