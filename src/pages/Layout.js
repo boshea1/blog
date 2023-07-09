@@ -20,10 +20,10 @@ const [user, loading] = useAuthState(auth)
       <h1 className={`${color} px-2 rounded`}>{loggedIn?'LOGGED IN':'LOGGED OUT'}</h1>
       </div> */}
       <div className="flex justify-end mr-40 my-4">
-      {user ? <button className="pb-1 px-2 border-b-2 hover:border-pink23"
+      {user ? <button className="pb-1 px-2 border-b-2 text-lg hover:border-pink23"
               onClick={() => auth.signOut()}>
         Signout
-      </button> : <button className="pb-1 px-2 border-b-2 hover:border-pink23">
+      </button> : <button className="pb-1 px-2 border-b-2 text-lg hover:border-pink23">
         <Link to="/login">Signin</Link>
       </button> }
       </div>
@@ -32,13 +32,13 @@ const [user, loading] = useAuthState(auth)
             <li className={`mx-4 pb-1 px-2 hover:border-blue-600 border-b-2`}>
               <Link to="/">Home</Link>
             </li>
-            <li className={`mx-4 pb-1 px-2 hover:border-red-600 border-b-2`}>
+            <li className={`mx-4 pb-1 px-2 hover:border-red-600 border-b-2 text-lg`}>
               <Link to="/blogs">Blogs</Link>
             </li>
-            <li className={`mx-4 pb-1 px-2 hover:border-green-600 border-b-2`}>
+            <li className={`mx-4 pb-1 px-2 hover:border-green-600 border-b-2 text-lg`}>
               <Link to="/contact">Contact</Link>
             </li>
-            <li className={`mx-4 pb-1 px-2 hover:border-pink-600 border-b-2`}>
+            <li className={`mx-4 pb-1 px-2 hover:border-pink-600 border-b-2 text-lg`}>
               <Link to="/apps">Apps</Link>
             </li>
           </ul>

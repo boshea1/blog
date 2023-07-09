@@ -4,6 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors:{'pink23':'#d834eb'},
+      fontFamily:{
+        agdasima:['Agdasima', 'sans-serif']
+      }
   },
   },
   plugins: [],

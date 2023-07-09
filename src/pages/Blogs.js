@@ -37,14 +37,14 @@ const [user,loading]=useAuthState(auth)
     const handleDelete = ({id}) => {
         // const filtered = blogs.filter((post)=>post.id !== id)
         // setBlogs([...filtered])
-        handleDel(id)
+        handleDel(user.uid ,id)
     }
     
     const handleEdit = () => {
         
         // const mapped = blogs.map((item)=>item.id === edit.id? edit : item)
         // setBlogs(mapped)
-        handleUpdate(edit)
+        handleUpdate(edit, user.uid)
         setEdit({id:null,title:'',post:''})
     }
 
@@ -70,17 +70,19 @@ const [user,loading]=useAuthState(auth)
 //     })
 // },[setBlogs])
 
-useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
-    // console.log(snapshot.docs.map(doc => doc.data()))
-    // console.log(snapshot.docs.map(doc => doc.id))
-    setBlogs(snapshot.docs.map((doc)=>({...doc.data(),id:doc.id})))
-}),[setBlogs])
-// console.log('setblogs',blogs)
+
+    useEffect(()=>onSnapshot(collection(db,'users', user.uid, 'posts'),(snapshot)=>{
+        console.log(snapshot.docs.map(doc => doc.data()))
+        console.log(snapshot.docs.map(doc => doc.id))
+        setBlogs(snapshot.docs.map((doc)=>({...doc.data(),id:doc.id})))
+    }),[setBlogs])
+    // console.log('setblogs',blogs)
+
 
 
     
   
-       
+    
 
     if (edit.id) {
         return (
@@ -103,17 +105,17 @@ useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
       
           <div>
           <h1 className="text-red-600 text-center text-5xl p-3 m-4">Blog Articles</h1>
-          {user? <div className="text-center object-center ">
+          {user? <div className="text-center items-center flex flex-col ">
           <label htmlFor="title" className="text-2xl md: block">Write a title</label>
-          <input type='text' className="xl:mr-20 lg:mr-4 px-3 w-[700px] h-9 border-2 border-black rounded m-3"
+          <input type='text' className="px-3 w-[600px] h-9 border-grey-900 border-4 rounded m-4"
           onChange={(e)=> setTitle(e.target.value)}/>
           <label htmlFor="textarea" className="text-2xl md: block">Write a new blog post</label>
-          <textarea  className='border-black border-2 m-4 rounded p-3 shadow-2xl' name="textarea" id="textarea" cols="90" rows="10"
+          <textarea  className='border-grey-900 border-4 m-4 rounded p-3 shadow-2xl' name="textarea" id="textarea" cols="90" rows="10"
           value={blog}onChange={(event)=> setBlog(event.target.value)} ></textarea>
-          <button className=" border-2 border-black px-2 py-1 rounded object-center"
-          onClick={()=>handleSubmit(blog, title, Math.floor(Math.random() * 10000))}>Submit</button>
+          <button className=" border-grey-900 bg-white border-4 px-2 py-1 rounded"
+          onClick={()=>handleSubmit(blog, title, user.uid)}>Submit</button>
           </div>: ''}
-          
+          {/* Math.floor(Math.random() * 10000) */}
         
      
         <div>
@@ -122,13 +124,13 @@ useEffect(()=>onSnapshot(collection(db,'users'),(snapshot)=>{
             // .slice().reverse()
             .map((blogg)=>{
                return(
-                   <div key={blogg.id} className="border-grey900 border-2 my-10 mx-4 rounded shadow-lg">
+                   <div key={blogg.id} className="border-grey-900 bg-white border-4 my-10 mx-4 rounded shadow-lg">
                     <p className='mx-8 my-3 text-2xl'>{blogg.title}</p>
                    <p className='mx-8 my-10 text-lg'>{blogg.post}</p>
                    <p className='mx-8 my-10 text-sm'>{blogg.date}</p>
-                  {user ? <div><button className="border-black border-2 rounded px-2 float-right top-0"
+                  {user ? <div><button className="my-2 ml-2 border-grey-900 bg-white border-4 rounded px-2 float-right top-0"
                            onClick={()=>{handleDelete(blogg)}}>Delete</button>
-                   <button className="border-black border-2 rounded px-2 float-right top-0"
+                   <button className="my-2 border-grey-900 border-4 rounded px-2 float-right top-0 bg-white"
                             onClick={(e)=> 
                                     setEdit({id:blogg.id, title:blogg.title, post: blogg.post,date:blogg.date})}>Edit</button></div> : ''}
                 </div>
